@@ -43,24 +43,53 @@ function Home() {
             Sabores do mar, drinks gelados e música ao vivo até a maré subir.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
-            <Link to="/reserva" className="rounded-full bg-primary px-8 py-3 font-nav font-bold text-primary-foreground transition hover:bg-primary-hover hover:shadow-glow">
+            <Link to="/reserva" className="rounded-full bg-primary px-8 py-3 font-nav font-bold text-primary-foreground shadow-sm transition hover:bg-primary-hover hover:shadow-glow hover:scale-105">
               Reservar mesa
             </Link>
-            <Link to="/agenda" className="rounded-full border-2 border-primary-foreground/80 px-8 py-3 font-nav font-bold text-primary-foreground transition hover:bg-primary-foreground/10">
+            <Link to="/agenda" className="rounded-full border-2 border-primary-foreground/80 px-8 py-3 font-nav font-bold text-primary-foreground backdrop-blur-xs transition hover:bg-primary-foreground/15 hover:scale-105">
               Ver agenda
             </Link>
           </div>
         </motion.div>
+
+        {/* Divisor curvo suave de onda para transição com o conteúdo */}
+        <div className="absolute bottom-0 left-0 right-0 z-10 pointer-events-none text-background fill-current">
+          <svg viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-8 md:h-16">
+            <path d="M0,32L80,48C160,64,320,96,480,96C640,96,800,64,960,48C1120,32,1280,32,1360,32L1440,32L1440,100L1360,100C1280,100,1120,100,960,100C800,100,640,100,480,100C320,100,160,100,80,100L0,100Z" />
+          </svg>
+        </div>
       </section>
 
       <section className="mx-auto max-w-7xl px-4 py-20 md:px-8">
-        <h2 className="text-center font-display text-3xl text-primary md:text-4xl">A Vibe</h2>
-        <p className="mt-3 text-center text-muted-foreground">Gente boa, palco aceso e pé na areia.</p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.6 }}
+          className="text-center"
+        >
+          <h2 className="font-display text-3xl text-primary md:text-4xl">A Vibe</h2>
+          <p className="mt-3 text-muted-foreground">Gente boa, palco aceso e pé na areia.</p>
+        </motion.div>
+
         <div className="mt-10 grid auto-rows-[220px] grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-          {vibe.map((v) => (
-            <div key={v.alt} className={`overflow-hidden rounded-xl ${v.cls}`}>
-              <img src={v.src} alt={v.alt} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
-            </div>
+          {vibe.map((v, idx) => (
+            <motion.div
+              key={v.alt}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.5, delay: idx * 0.1 }}
+              whileHover={{ y: -5 }}
+              className={`group overflow-hidden rounded-2xl border border-border/40 shadow-sm transition-all duration-300 hover:shadow-lg hover:border-primary/30 ${v.cls}`}
+            >
+              <img
+                src={v.src}
+                alt={v.alt}
+                loading="lazy"
+                className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              />
+            </motion.div>
           ))}
         </div>
       </section>

@@ -29,7 +29,7 @@ export function Header() {
     "font-nav text-soft-shadow tracking-wide transition-colors hover:text-primary";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-nav backdrop-blur-md">
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/75 backdrop-blur-xl shadow-xs transition-colors">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 md:px-8">
         <Link to="/" className="font-display text-2xl text-primary text-soft-shadow md:text-3xl">
           Maré Pura

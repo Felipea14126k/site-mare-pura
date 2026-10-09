@@ -69,23 +69,23 @@
   --card-foreground: #2D3748;
   --popover: #FFFFFF;
   --popover-foreground: #2D3748;
-  --primary: #FF9A85;
-  --primary-hover: #FFB878;
+  --primary: #FF7E67;
+  --primary-hover: #FF684D;
   --primary-foreground: #FFFFFF;
   --secondary: #F1EBE0;
   --secondary-foreground: #2D3748;
   --muted: #F1EBE0;
   --muted-foreground: #718096;
-  --accent: #FFE7DF;
+  --accent: #FFE4DC;
   --accent-foreground: #2D3748;
   --destructive: #E53E3E;
   --destructive-foreground: #FFFFFF;
   --border: rgba(45,55,72,0.1);
   --input: rgba(45,55,72,0.15);
-  --ring: #FF9A85;
-  --nav: rgba(255,255,255,0.8);
+  --ring: #FF7E67;
+  --nav: rgba(255,255,255,0.85);
   --whatsapp: #25D366;
-  --glow: 0 10px 25px -10px rgba(255,126,103,0.5);
+  --glow: 0 10px 25px -10px rgba(255,104,77,0.55);
 }
 
 .dark {
@@ -135,7 +135,82 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     transition: background-color .3s, color .3s;
+    position: relative;
+    min-height: 100vh;
   }
+}
+
+/* Fundo com efeito de luz natural do mar (ambient mesh lights) */
+.ocean-ambient-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.ocean-blob-1 {
+  position: absolute;
+  top: -10%;
+  left: 15%;
+  width: 50vw;
+  height: 50vw;
+  max-width: 650px;
+  max-height: 650px;
+  background: radial-gradient(circle, rgba(255, 154, 133, 0.12) 0%, rgba(255, 184, 120, 0.05) 50%, transparent 70%);
+  filter: blur(80px);
+  border-radius: 50%;
+  animation: float-slow 18s ease-in-out infinite alternate;
+}
+
+.ocean-blob-2 {
+  position: absolute;
+  top: 40%;
+  right: -5%;
+  width: 55vw;
+  height: 55vw;
+  max-width: 700px;
+  max-height: 700px;
+  background: radial-gradient(circle, rgba(56, 189, 248, 0.10) 0%, rgba(14, 165, 233, 0.03) 50%, transparent 70%);
+  filter: blur(90px);
+  border-radius: 50%;
+  animation: float-reverse 22s ease-in-out infinite alternate;
+}
+
+.dark .ocean-blob-1 {
+  background: radial-gradient(circle, rgba(255, 106, 43, 0.15) 0%, rgba(255, 159, 64, 0.04) 50%, transparent 70%);
+}
+
+.dark .ocean-blob-2 {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.12) 0%, rgba(2, 132, 199, 0.03) 50%, transparent 70%);
+}
+
+@keyframes float-slow {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.08); }
+  100% { transform: translate(-20px, 60px) scale(0.95); }
+}
+
+@keyframes float-reverse {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -40px) scale(1.1); }
+  100% { transform: translate(30px, -20px) scale(0.96); }
+}
+
+/* Efeito sutil de textura / grão orgânico */
+.sand-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.025;
+  background-image: radial-gradient(#000 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+.dark .sand-grain {
+  opacity: 0.04;
+  background-image: radial-gradient(#fff 1px, transparent 1px);
 }
 
 /* Painel administrativo — paleta própria */

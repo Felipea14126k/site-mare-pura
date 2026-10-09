@@ -1,24 +1,4 @@
-# Pixel Perfect Replica
-
-Implement exactly the screenshot and nothing else
-
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/6a299670-508c-4bfc-8e86-2591533884d1).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
-```
+Para criar a senha de acesso do admin precisa ser executado esse comando no terminal
+node -e "const {scryptSync,randomBytes}=require('node:crypto');const s=randomBytes(16);const h=scryptSync('AQUI_VAI_SUA_SENHA_SUPER_SECRETA',s,64);console.log('ADMIN_SENHA_HASH='+s.toString('hex')+':'+h.toString('hex'))"
+para iniciar o programa com sua senha funcionando precisa ser esse
+set ADMIN_EMAIL=admin@marepura.com & set ADMIN_SENHA_HASH=a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6:abcdef0123456789abcdef0123456789abcdef0123456789abcdef0123456789 & npm run dev -- --host

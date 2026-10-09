@@ -1,5 +1,4 @@
 /**
-<<<<<<< HEAD
  * ==============================================================================
  * STORE DO PAINEL ADMINISTRATIVO (src/lib/admin-store.ts)
  * ==============================================================================
@@ -162,57 +161,11 @@ export function useAdminData() {
       listeners.add(l);
       return () => listeners.delete(l);
     },
-=======
- * Cliente do painel admin — conversa com o servidor (pasta /servidor).
- * Os dados ficam gravados no servidor; aqui só guardamos uma cópia em memória
- * para mostrar na tela. O token de login fica no sessionStorage.
- */
-import { useSyncExternalStore } from "react";
-
-export type Prato = { id: string; nome: string; categoria: string; descricao: string; imagem?: string };
-export type Show = { id: string; data: string; banda: string; estilo: string };
-export type ReservaStatus = "Pendente" | "Confirmada" | "Cancelada";
-export type Reserva = { id: string; nome: string; whatsapp: string; data: string; horario: string; pessoas: number; status: ReservaStatus; criadaEm?: string };
-
-type State = { pratos: Prato[]; shows: Show[]; reservas: Reserva[] };
-
-export const CATEGORIAS = ["Comidas", "Bebidas", "Lanches", "Sobremesas", "Vinhos", "Combos", "Porções"];
-export const CSRF = "mock-token-xyz";
-
-const vazio: State = { pratos: [], shows: [], reservas: [] };
-let state: State = vazio;
-let carregou = false;
-const listeners = new Set<() => void>();
-const set = (s: State) => { state = s; listeners.forEach((l) => l()); };
-
-const AUTH_KEY = "marepura-admin-token";
-const token = () => (typeof window === "undefined" ? "" : sessionStorage.getItem(AUTH_KEY) ?? "");
-
-async function api(method: "GET" | "POST", body?: unknown) {
-  const res = await fetch("/api/admin", {
-    method,
-    headers: { "Content-Type": "application/json", Authorization: `Bearer ${token()}` },
-    body: body ? JSON.stringify({ ...(body as object), csrf_token: CSRF }) : null,
-  });
-  if (res.status === 401) { logoutLocal(); window.location.href = "/login"; throw new Error("401"); }
-  const data = await res.json();
-  if (!res.ok) { alert(data.erro ?? "Erro no servidor."); throw new Error(data.erro); }
-  set(data as State);
-}
-
-export const recarregar = () => api("GET").catch(() => undefined);
-
-export function useAdminData() {
-  if (!carregou && typeof window !== "undefined") { carregou = true; void recarregar(); }
-  return useSyncExternalStore(
-    (l) => { listeners.add(l); return () => listeners.delete(l); },
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
     () => state,
     () => vazio,
   );
 }
 
-<<<<<<< HEAD
 // ==============================================================================
 // 6. AÇÕES DO PAINEL (Cada função dispara um POST para /api/admin)
 // ==============================================================================
@@ -251,34 +204,21 @@ export const setReservaStatus = (id: string, status: ReservaStatus) =>
  * Envia uma reserva de mesa para o servidor sem exigir autenticação.
  * Retorna null em caso de sucesso, ou a mensagem de erro em caso de falha.
  */
-=======
-const run = (b: unknown) => api("POST", b).catch(() => undefined);
-export const addPrato = (p: Omit<Prato, "id">) => run({ acao: "addPrato", dados: p });
-export const editPrato = (p: Prato) => { const { id, ...dados } = p; return run({ acao: "editPrato", id, dados }); };
-export const deletePrato = (id: string) => run({ acao: "deletePrato", id });
-export const addShow = (sh: Omit<Show, "id">) => run({ acao: "addShow", dados: sh });
-export const deleteShow = (id: string) => run({ acao: "deleteShow", id });
-export const setReservaStatus = (id: string, status: ReservaStatus) => run({ acao: "statusReserva", id, status });
-
-/** Envia uma reserva pública ao servidor. Retorna mensagem de erro ou null. */
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
 export async function enviarReserva(r: Omit<Reserva, "id" | "status">): Promise<string | null> {
   try {
+    // 1. Pega um token CSRF novo e fresco direto do servidor
+    const csrfRes = await fetch("/api/csrf").then(res => res.json()).catch(() => null);
+    const token = csrfRes?.csrf_token;
+
+    // 2. Envia a reserva com o token legítimo
     const res = await fetch("/api/reservas", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-<<<<<<< HEAD
-      // Inclui o token CSRF (⚠️ ainda é estático, será dinâmico na Lição 3)
-      body: JSON.stringify({ ...r, csrf_token: CSRF }),
+      body: JSON.stringify({ ...r, csrf_token: token }),
     });
 
-    if (res.ok) return null;
+    if (res.ok) return null; //sucesso
 
-=======
-      body: JSON.stringify({ ...r, csrf_token: CSRF }),
-    });
-    if (res.ok) return null;
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
     const d = await res.json().catch(() => ({}));
     return d.erro ?? "Não foi possível enviar a reserva.";
   } catch {
@@ -286,7 +226,6 @@ export async function enviarReserva(r: Omit<Reserva, "id" | "status">): Promise<
   }
 }
 
-<<<<<<< HEAD
 // ==============================================================================
 // 8. SANITIZAÇÃO DE TEXTO NO CLIENTE (Primeira barreira contra XSS)
 // ==============================================================================
@@ -321,34 +260,10 @@ export const todayISO = () => new Date().toISOString().slice(0, 10);
  * Verifica se o navegador possui um token de sessão guardado.
  * Usado pelo painel admin para redirecionar quem não está logado.
  */
-=======
-/**
- * sanitizeInput() — limpeza preventiva contra XSS no navegador.
- * O servidor repete essa limpeza, pois o navegador pode ser burlado.
- */
-export function sanitizeInput(v: string): string {
-  return v
-    .replace(/<[^>]*>/g, "")
-    .replace(/javascript:/gi, "")
-    .replace(/on\w+\s*=/gi, "")
-    .replace(/[<>"'`]/g, "")
-    .trim();
-}
-
-export const NAME_REGEX = /^[A-Za-zÀ-ÿ0-9 ]{2,60}$/;
-export const DATE_REGEX = /^\d{4}-\d{2}-\d{2}$/;
-export const todayISO = () => new Date().toISOString().slice(0, 10);
-
-/* ---------------- Autenticação (validada no servidor) ---------------- */
-export const MOCK_EMAIL = "admin@marepura.com";
-export const MOCK_PASS = "senha123";
-
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
 export function isAuthenticated() {
   return !!token();
 }
 
-<<<<<<< HEAD
 /**
  * login(email, senha)
  * Envia as credenciais para o servidor e, se correto, salva o token de sessão.
@@ -358,15 +273,10 @@ export async function login(
   email: string,
   senha: string
 ): Promise<{ ok: boolean; erro?: string; espera?: number }> {
-=======
-/** Retorna { ok } ou { ok:false, erro, espera(segundos de bloqueio) }. */
-export async function login(email: string, senha: string): Promise<{ ok: boolean; erro?: string; espera?: number }> {
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
   try {
     const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-<<<<<<< HEAD
       // ⚠️ Token CSRF estático — será substituído por token dinâmico na Lição 3
       body: JSON.stringify({ email, senha, csrf_token: CSRF }),
     });
@@ -380,19 +290,12 @@ export async function login(email: string, senha: string): Promise<{ ok: boolean
       return { ok: true };
     }
 
-=======
-      body: JSON.stringify({ email, senha, csrf_token: CSRF }),
-    });
-    const d = await res.json();
-    if (res.ok) { sessionStorage.setItem(AUTH_KEY, d.token); carregou = false; return { ok: true }; }
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
     return { ok: false, erro: d.erro, espera: d.espera ?? 0 };
   } catch {
     return { ok: false, erro: "Sem conexão com o servidor." };
   }
 }
 
-<<<<<<< HEAD
 /**
  * logoutLocal()
  * Remove o token de sessão do navegador e limpa o estado em memória.
@@ -418,11 +321,4 @@ export function logout() {
     method: "DELETE",
     headers: { Authorization: `Bearer ${t}` },
   }).catch(() => undefined);
-=======
-function logoutLocal() { sessionStorage.removeItem(AUTH_KEY); set(vazio); carregou = false; }
-export function logout() {
-  const t = token();
-  logoutLocal();
-  void fetch("/api/login", { method: "DELETE", headers: { Authorization: `Bearer ${t}` } }).catch(() => undefined);
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
 }

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * ==============================================================================
  * ENDPOINT DE RESERVAS PÚBLICAS: /api/reservas (src/routes/api/reservas.ts)
@@ -11,7 +10,7 @@
  * 
  * Proteções ativas:
  *  ✅ Rate limiting: bloqueia se o mesmo IP enviar mais de 5 reservas por minuto
- *  ✅ Validação CSRF: rejeita requisições sem token válido (⚠️ ainda é mock, ver Lição 3)
+ *  ✅ Validação CSRF: token dinâmico gerado por /api/csrf, uso único, expira em 10 minutos
  *  ✅ Validação Zod: garante que todos os campos estão no formato correto
  * ==============================================================================
  */
@@ -41,11 +40,11 @@ export const Route = createFileRoute("/api/reservas")({
         // Lê o corpo da requisição com segurança (retorna null se vier malformado)
         const body = await request.json().catch(() => null);
 
-        // ⚠️ VULNERABILIDADE PENDENTE (Lição 3):
-        // Aqui está sendo verificado um token CSRF estático ("mock-token-xyz").
-        // O correto é usar s.validarTokenCSRF(body?.csrf_token) com tokens dinâmicos.
-        if (body?.csrf_token !== "mock-token-xyz") {
-          return s.json({ erro: "Token inválido." }, 403);
+        // ✅ Validação CSRF com token dinâmico (gerado por GET /api/csrf):
+        // O token é único, dura 10 minutos e é destruído assim que for usado (uso único).
+        // Tokens inexistentes, expirados ou reutilizados são rejeitados com HTTP 403.
+        if (!s.validarTokenCSRF(body?.csrf_token)) {
+          return s.json({ erro: "Token CSRF inválido ou expirado." }, 403);
         }
 
         // Valida todos os campos da reserva usando o schema Zod:
@@ -71,28 +70,6 @@ export const Route = createFileRoute("/api/reservas")({
         });
 
         // Retorna HTTP 201 (Created) indicando que a reserva foi recebida com sucesso
-=======
-import { createFileRoute } from "@tanstack/react-router";
-
-// POST /api/reservas — público: qualquer visitante envia uma reserva.
-export const Route = createFileRoute("/api/reservas")({
-  server: {
-    handlers: {
-      POST: async ({ request }) => {
-        const s = await import("../../../servidor/seguranca.server");
-        const db = await import("../../../servidor/banco.server");
-        const ip = s.ipDe(request);
-        if (s.excedeuReservas(ip)) return s.json({ erro: "Muitas reservas seguidas. Aguarde um minuto." }, 429);
-
-        const body = await request.json().catch(() => null);
-        if (body?.csrf_token !== "mock-token-xyz") return s.json({ erro: "Token inválido." }, 403);
-        const r = s.reservaSchema.safeParse(body);
-        if (!r.success) return s.json({ erro: "Dados inválidos.", detalhes: r.error.flatten().fieldErrors }, 400);
-
-        await db.alterar((b) => {
-          b.reservas.unshift({ ...r.data, id: db.uid(), status: "Pendente", criadaEm: new Date().toISOString(), ip });
-        });
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
         return s.json({ ok: true }, 201);
       },
     },

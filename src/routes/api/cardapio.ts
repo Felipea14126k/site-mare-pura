@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 /**
  * ==============================================================================
  * ENDPOINT PÚBLICO DO CARDÁPIO: /api/cardapio (src/routes/api/cardapio.ts)
@@ -31,18 +30,6 @@ export const Route = createFileRoute("/api/cardapio")({
         const b = await db.ler();
 
         // Retorna apenas os pratos (não expõe reservas ou outros dados sensíveis)
-=======
-import { createFileRoute } from "@tanstack/react-router";
-
-// GET /api/cardapio — público: lista os pratos (somente leitura) para a página Cardápio.
-export const Route = createFileRoute("/api/cardapio")({
-  server: {
-    handlers: {
-      GET: async () => {
-        const s = await import("../../../servidor/seguranca.server");
-        const db = await import("../../../servidor/banco.server");
-        const b = await db.ler();
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
         return s.json({ pratos: b.pratos });
       },
     },

@@ -22,6 +22,7 @@ import { Route as AdminCardapioRouteImport } from './routes/admin.cardapio'
 import { Route as AdminReservasRouteImport } from './routes/admin.reservas'
 import { Route as ApiAdminRouteImport } from './routes/api/admin'
 import { Route as ApiCardapioRouteImport } from './routes/api/cardapio'
+import { Route as ApiCsrfRouteImport } from './routes/api/csrf'
 import { Route as ApiLoginRouteImport } from './routes/api/login'
 import { Route as ApiReservasRouteImport } from './routes/api/reservas'
 
@@ -90,6 +91,11 @@ const ApiCardapioRoute = ApiCardapioRouteImport.update({
   path: '/api/cardapio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiCsrfRoute = ApiCsrfRouteImport.update({
+  id: '/api/csrf',
+  path: '/api/csrf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiLoginRoute = ApiLoginRouteImport.update({
   id: '/api/login',
   path: '/api/login',
@@ -114,6 +120,7 @@ export interface FileRoutesByFullPath {
   '/admin/reservas': typeof AdminReservasRoute
   '/api/admin': typeof ApiAdminRoute
   '/api/cardapio': typeof ApiCardapioRoute
+  '/api/csrf': typeof ApiCsrfRoute
   '/api/login': typeof ApiLoginRoute
   '/api/reservas': typeof ApiReservasRoute
   '/admin/': typeof AdminIndexRoute
@@ -130,6 +137,7 @@ export interface FileRoutesByTo {
   '/admin/reservas': typeof AdminReservasRoute
   '/api/admin': typeof ApiAdminRoute
   '/api/cardapio': typeof ApiCardapioRoute
+  '/api/csrf': typeof ApiCsrfRoute
   '/api/login': typeof ApiLoginRoute
   '/api/reservas': typeof ApiReservasRoute
   '/admin': typeof AdminIndexRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/admin/reservas': typeof AdminReservasRoute
   '/api/admin': typeof ApiAdminRoute
   '/api/cardapio': typeof ApiCardapioRoute
+  '/api/csrf': typeof ApiCsrfRoute
   '/api/login': typeof ApiLoginRoute
   '/api/reservas': typeof ApiReservasRoute
   '/admin/': typeof AdminIndexRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/admin/reservas'
     | '/api/admin'
     | '/api/cardapio'
+    | '/api/csrf'
     | '/api/login'
     | '/api/reservas'
     | '/admin/'
@@ -183,6 +193,7 @@ export interface FileRouteTypes {
     | '/admin/reservas'
     | '/api/admin'
     | '/api/cardapio'
+    | '/api/csrf'
     | '/api/login'
     | '/api/reservas'
     | '/admin'
@@ -200,6 +211,7 @@ export interface FileRouteTypes {
     | '/admin/reservas'
     | '/api/admin'
     | '/api/cardapio'
+    | '/api/csrf'
     | '/api/login'
     | '/api/reservas'
     | '/admin/'
@@ -215,6 +227,7 @@ export interface RootRouteChildren {
   ReservaRoute: typeof ReservaRoute
   ApiAdminRoute: typeof ApiAdminRoute
   ApiCardapioRoute: typeof ApiCardapioRoute
+  ApiCsrfRoute: typeof ApiCsrfRoute
   ApiLoginRoute: typeof ApiLoginRoute
   ApiReservasRoute: typeof ApiReservasRoute
 }
@@ -312,6 +325,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiCardapioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/csrf': {
+      id: '/api/csrf'
+      path: '/api/csrf'
+      fullPath: '/api/csrf'
+      preLoaderRoute: typeof ApiCsrfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/login': {
       id: '/api/login'
       path: '/api/login'
@@ -355,6 +375,7 @@ const rootRouteChildren: RootRouteChildren = {
   ReservaRoute: ReservaRoute,
   ApiAdminRoute: ApiAdminRoute,
   ApiCardapioRoute: ApiCardapioRoute,
+  ApiCsrfRoute: ApiCsrfRoute,
   ApiLoginRoute: ApiLoginRoute,
   ApiReservasRoute: ApiReservasRoute,
 }

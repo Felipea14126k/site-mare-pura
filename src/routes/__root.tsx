@@ -12,7 +12,6 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import { Header } from "@/components/site/Header";
-import { WhatsAppFab } from "@/components/site/WhatsAppFab";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -112,7 +111,14 @@ function RootShell({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: "try{if(localStorage.getItem('theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}" }} />
       </head>
       <body>
-        {children}
+        <div className="ocean-ambient-bg" aria-hidden="true">
+          <div className="ocean-blob-1" />
+          <div className="ocean-blob-2" />
+        </div>
+        <div className="sand-grain" aria-hidden="true" />
+        <div className="relative z-10 flex min-h-screen flex-col">
+          {children}
+        </div>
         <Scripts />
       </body>
     </html>
@@ -134,7 +140,6 @@ function RootComponent() {
       <footer className="border-t border-border py-8 text-center text-sm text-muted-foreground">
         <span className="font-display text-primary">Maré Pura</span> · Av. Beira Mar, 1000
       </footer>
-      <WhatsAppFab />
     </QueryClientProvider>
   );
 }

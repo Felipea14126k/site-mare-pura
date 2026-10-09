@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Music } from "lucide-react";
+import { motion } from "framer-motion";
 import { PageFade, PageTitle } from "@/components/site/PageFade";
 
 export const Route = createFileRoute("/agenda")({
@@ -27,22 +28,39 @@ function Agenda() {
     <PageFade>
       <PageTitle title="Agenda" subtitle="Palco aceso, toda semana." />
       <div className="mx-auto max-w-3xl px-4 pb-24">
-        <div className="rounded-xl border border-border bg-card px-6">
-          {shows.map((s) => (
-            <div key={s.day} className="flex flex-row items-center justify-between border-b border-border py-4 last:border-b-0">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="rounded-2xl border border-border/60 bg-card/90 backdrop-blur-xs p-2 shadow-xs"
+        >
+          {shows.map((s, idx) => (
+            <motion.div
+              key={s.day}
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: idx * 0.1, duration: 0.4 }}
+              whileHover={{ x: 6 }}
+              className="flex flex-row items-center justify-between rounded-xl px-4 py-4 transition-colors hover:bg-accent/40"
+            >
               <div className="flex items-center gap-4">
-                <Music className="text-primary" size={22} />
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  <Music size={20} />
+                </div>
                 <div>
-                  <p className="font-bold">{s.day}: {s.artist}</p>
+                  <p className="font-bold tracking-tight">{s.day}: {s.artist}</p>
                   <p className="text-sm text-muted-foreground">{s.genre}</p>
                 </div>
               </div>
               <span className="font-nav font-bold text-primary">{s.time}</span>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         <div className="mt-10 text-center">
-          <Link to="/reserva" className="rounded-full bg-primary px-8 py-3 font-nav font-bold text-primary-foreground transition hover:bg-primary-hover hover:shadow-glow">
+          <Link
+            to="/reserva"
+            className="inline-block rounded-full bg-primary px-8 py-3 font-nav font-bold text-primary-foreground shadow-sm transition hover:bg-primary-hover hover:shadow-glow hover:scale-105"
+          >
             Garantir minha mesa
           </Link>
         </div>

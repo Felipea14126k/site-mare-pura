@@ -85,20 +85,43 @@ function Cardapio() {
         <AnimatePresence mode="wait">
           <motion.div
             key={active}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial="hidden"
+            animate="show"
+            exit="exit"
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: { staggerChildren: 0.06 },
+              },
+              exit: { opacity: 0 },
+            }}
             className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
           >
             {list.map((i) => (
-              <article key={i.name} className="overflow-hidden rounded-xl border border-border bg-card shadow-sm transition hover:-translate-y-1 hover:shadow-glow">
-                <img src={i.img} alt={i.name} loading="lazy" className="h-48 w-full object-cover" />
-                <div className="p-5">
-                  <h3 className="text-lg font-bold">{i.name}</h3>
-                  <p className="mt-1 text-sm text-muted-foreground">{i.desc}</p>
+              <motion.article
+                key={i.name}
+                variants={{
+                  hidden: { opacity: 0, y: 16 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: "easeOut" } },
+                }}
+                whileHover={{ y: -6 }}
+                className="group overflow-hidden rounded-2xl border border-border/60 bg-card/90 backdrop-blur-xs shadow-xs transition-all duration-300 hover:shadow-xl hover:border-primary/40 hover:shadow-primary/5"
+              >
+                <div className="relative h-48 w-full overflow-hidden">
+                  <img
+                    src={i.img}
+                    alt={i.name}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-108"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
-              </article>
+                <div className="p-5">
+                  <h3 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">{i.name}</h3>
+                  <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{i.desc}</p>
+                </div>
+              </motion.article>
             ))}
           </motion.div>
         </AnimatePresence>

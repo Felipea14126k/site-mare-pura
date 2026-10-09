@@ -1,5 +1,4 @@
 /**
-<<<<<<< HEAD
  * ==============================================================================
  * SERVIDOR — BANCO DE DADOS LOCAL EM ARQUIVO JSON (banco.server.ts)
  * ==============================================================================
@@ -80,30 +79,6 @@ const emDias = (n: number) => new Date(Date.now() + n * 864e5).toISOString().sli
  * inicial()
  * Retorna os dados padrão do restaurante caso o arquivo banco.json ainda não exista.
  */
-=======
- * SERVIDOR — Banco de dados local em arquivo JSON.
- * Os dados ficam gravados em servidor/dados/banco.json na máquina que roda o site
- * (ex.: o Kali). Toda leitura/escrita passa por aqui, só no servidor.
- */
-import { promises as fs } from "fs";
-import path from "path";
-
-export type Prato = { id: string; nome: string; categoria: string; descricao: string; imagem?: string };
-export type Show = { id: string; data: string; banda: string; estilo: string };
-export type ReservaStatus = "Pendente" | "Confirmada" | "Cancelada";
-export type Reserva = {
-  id: string; nome: string; whatsapp: string; data: string; horario: string;
-  pessoas: number; status: ReservaStatus; criadaEm: string; ip?: string;
-};
-export type Banco = { pratos: Prato[]; shows: Show[]; reservas: Reserva[] };
-
-const PASTA = path.join(process.cwd(), "servidor", "dados");
-const ARQUIVO = path.join(PASTA, "banco.json");
-
-const uid = () => crypto.randomUUID();
-const emDias = (n: number) => new Date(Date.now() + n * 864e5).toISOString().slice(0, 10);
-
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
 function inicial(): Banco {
   return {
     pratos: [
@@ -121,7 +96,6 @@ function inicial(): Banco {
   };
 }
 
-<<<<<<< HEAD
 // ==============================================================================
 // 3. CONTROLE DE CONCORRÊNCIA E FILA ATÔMICA
 // ==============================================================================
@@ -140,22 +114,12 @@ export async function ler(): Promise<Banco> {
     return JSON.parse(conteudo) as Banco;
   } catch {
     // Se o arquivo ainda não existe no disco, grava os dados iniciais e retorna
-=======
-// Fila simples para evitar duas gravações simultâneas corromperem o arquivo.
-let fila: Promise<unknown> = Promise.resolve();
-
-export async function ler(): Promise<Banco> {
-  try {
-    return JSON.parse(await fs.readFile(ARQUIVO, "utf8")) as Banco;
-  } catch {
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
     const b = inicial();
     await gravar(b);
     return b;
   }
 }
 
-<<<<<<< HEAD
 /**
  * gravar(banco)
  * Salva os dados no disco de forma ATÔMICA e segura:
@@ -194,22 +158,6 @@ export function alterar<T>(fn: (b: Banco) => T): Promise<T> {
   });
 
   // Mantém a fila viva mesmo se alguma gravação falhar
-=======
-async function gravar(b: Banco) {
-  await fs.mkdir(PASTA, { recursive: true });
-  const tmp = ARQUIVO + ".tmp";
-  await fs.writeFile(tmp, JSON.stringify(b, null, 2), "utf8");
-  await fs.rename(tmp, ARQUIVO);
-}
-
-export function alterar<T>(fn: (b: Banco) => T): Promise<T> {
-  const p = fila.then(async () => {
-    const b = await ler();
-    const r = fn(b);
-    await gravar(b);
-    return r;
-  });
->>>>>>> 10c1c96e1b8bce24ea72e89322e56a029e88295b
   fila = p.catch(() => undefined);
   return p;
 }
